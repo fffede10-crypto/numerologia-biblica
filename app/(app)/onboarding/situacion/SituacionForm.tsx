@@ -70,11 +70,17 @@ function OpcionCard({
   )
 }
 
-export default function SituacionForm() {
+interface SituacionFormProps {
+  areaInicial?: string | null
+  etapaInicial?: string | null
+  isActualizando?: boolean
+}
+
+export default function SituacionForm({ areaInicial, etapaInicial, isActualizando = false }: SituacionFormProps) {
   const [paso, setPaso] = useState(1)
   const [visible, setVisible] = useState(true)
-  const [area, setArea] = useState<string | null>(null)
-  const [etapa, setEtapa] = useState<string | null>(null)
+  const [area, setArea] = useState<string | null>(areaInicial ?? null)
+  const [etapa, setEtapa] = useState<string | null>(etapaInicial ?? null)
   const [intencion, setIntencion] = useState('')
   const [guardando, setGuardando] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
@@ -110,7 +116,7 @@ export default function SituacionForm() {
         }),
       })
       if (!res.ok) throw new Error()
-      window.location.href = '/dashboard'
+      window.location.href = isActualizando ? '/mi-perfil' : '/dashboard'
     } catch {
       setErrorMsg('Hubo un problema. Intentá de nuevo.')
       setGuardando(false)
@@ -239,7 +245,7 @@ export default function SituacionForm() {
                   Guardando...
                 </>
               ) : (
-                'Comenzar mi camino'
+                isActualizando ? 'Guardar cambios' : 'Comenzar mi camino'
               )}
             </button>
             <div className="flex items-center gap-3">

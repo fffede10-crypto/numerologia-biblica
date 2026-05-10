@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #F9FAFB; }
+  ::-webkit-scrollbar-thumb { background: #7C3AED; border-radius: 3px; }
+  .dark ::-webkit-scrollbar-track { background: #0F0A1E; }
+}
+
+@layer utilities {
+  .font-scripture {
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+  }
+}

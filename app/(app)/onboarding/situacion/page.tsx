@@ -22,7 +22,8 @@ export default async function SituacionPage({ searchParams }: Props) {
     .eq('id', payload.sub)
     .single()
 
-  const modoActualizar = searchParams.modo === 'actualizar'
+  // ?modo=actualizar bypasea el redirect — usado desde el botón Actualizar en /mi-perfil
+  const modoActualizar = searchParams?.modo === 'actualizar'
 
   // Si ya tiene contexto y NO viene del botón Actualizar, redirigir al dashboard
   if (usuario?.area_orientacion && !modoActualizar) {

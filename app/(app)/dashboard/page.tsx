@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/Card'
 import { NumberBadge } from '@/components/ui/NumberBadge'
 import { Avatar } from '@/components/ui/Avatar'
 import { Usuario, PerfilNumerologico } from '@/types'
+import { parseAreas } from '@/lib/utils'
 
 const QUICK_LINKS = [
   {
@@ -101,7 +102,8 @@ export default async function DashboardPage() {
   const hora = new Date().getHours()
   const saludo = hora < 12 ? 'Buenos días' : hora < 19 ? 'Buenas tardes' : 'Buenas noches'
   const tienePeril = perfil?.numero_destino != null
-  const area = usuario?.area_orientacion ?? null
+  const areas = parseAreas(usuario?.area_orientacion)
+  const area = areas[0] ?? null   // primera área para el mensaje personalizado
 
   const numeros = todosLosNumeros ?? []
   const indiceDiario = numeros.length > 0 ? getIndiceDiario() % numeros.length : 0
@@ -129,7 +131,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Banner de contexto */}
-      {!area && tienePeril && <ContextoBanner />}
+      {areas.length === 0 && tienePeril && <ContextoBanner />}
 
       {/* Número del Día */}
       {numeroDeLDia && (

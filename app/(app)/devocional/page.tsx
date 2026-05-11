@@ -6,6 +6,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { NumeroBiblico, DevocionalCompletado } from '@/types'
 import DevocionalCard from '@/components/features/DevocionalCard'
 import { getAccionDiaria } from '@/lib/acciones-diarias'
+import { parseAreas } from '@/lib/utils'
 
 function getIndiceDiario(): number {
   const ahora = new Date()
@@ -95,7 +96,8 @@ export default async function DevocionalPage() {
   const numeroDeLDia = numeros[indice]
   const historial = historialData ?? []
   const streak = calcularStreak(historial)
-  const area = usuario?.area_orientacion ?? null
+  const areas = parseAreas(usuario?.area_orientacion)
+  const area = areas[0] ?? null   // primera área para texto y acción del día
 
   const fechaDisplay = new Date().toLocaleDateString('es-AR', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',

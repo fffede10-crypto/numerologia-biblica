@@ -10,6 +10,7 @@ import { Avatar } from '@/components/ui/Avatar'
 import PerfilEditor from '@/components/features/PerfilEditor'
 import ContextoBanner from '@/components/features/ContextoBanner'
 import { PerfilNumerologico, NumeroBiblico, Usuario } from '@/types'
+import { parseAreas } from '@/lib/utils'
 
 const AREA_LABELS: Record<string, { emoji: string; label: string }> = {
   relaciones:       { emoji: '💑', label: 'Relaciones y vínculos' },
@@ -100,6 +101,7 @@ export default async function MiPerfilPage() {
 
   const numeroMap = new Map(numerosData?.map((n) => [n.numero, n]) ?? [])
 
+  const areasUsuario = parseAreas(usuario?.area_orientacion)
   const displayName = perfil.nombre_completo ?? usuario?.nombre ?? usuario?.email ?? ''
   const fechaDisplay = perfil.fecha_nacimiento
     ? new Date(perfil.fecha_nacimiento + 'T12:00:00').toLocaleDateString('es-AR', {
@@ -128,7 +130,7 @@ export default async function MiPerfilPage() {
       </div>
 
       {/* Banner de contexto */}
-      {!usuario?.area_orientacion && <ContextoBanner />}
+      {areasUsuario.length === 0 && <ContextoBanner />}
 
       {/* Resumen de 4 números */}
       <Card className="relative overflow-hidden">
@@ -205,20 +207,29 @@ export default async function MiPerfilPage() {
       {/* Mi contexto actual */}
       <div className="space-y-3">
         <h2 className="text-base font-semibold text-gray-700 dark:text-slate-300">Mi contexto actual</h2>
-        {usuario?.area_orientacion ? (
+        {areasUsuario.length > 0 ? (
           <Card>
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-3 flex-1 min-w-0">
                 {(() => {
-                  const area = AREA_LABELS[usuario.area_orientacion!]
-                  const etapa = usuario.etapa_vida ? ETAPA_LABELS[usuario.etapa_vida] : null
+                  const etapa = usuario?.etapa_vida ? ETAPA_LABELS[usuario.etapa_vida] : null
                   return (
                     <>
                       <div>
-                        <p className="text-xs text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1">Área de orientación</p>
-                        <p className="text-sm font-medium text-gray-900 dark:text-white">
-                          {area ? `${area.emoji} ${area.label}` : usuario.area_orientacion}
-                        </p>
+                        <p className="text-xs text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">Áreas de orientación</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {areasUsuario.map(a => {
+                            const info = AREA_LABELS[a]
+                            return (
+                              <span
+                                key={a}
+                                className="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700/40"
+                              >
+                                {info ? `${info.emoji} ${info.label}` : a}
+                              </span>
+                            )
+                          })}
+                        </div>
                       </div>
                       {etapa && (
                         <div>

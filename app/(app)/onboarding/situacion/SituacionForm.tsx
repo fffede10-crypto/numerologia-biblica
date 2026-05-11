@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Loader2, ChevronLeft } from 'lucide-react'
+import { parseAreas } from '@/lib/utils'
 
 type Opcion = { value: string; emoji: string; label: string; desc: string }
 
@@ -24,7 +25,7 @@ const ETAPAS: Opcion[] = [
 ]
 
 const TITULOS = [
-  '¿En qué área de tu vida buscás orientación ahora mismo?',
+  '¿En qué áreas de tu vida buscás orientación ahora mismo?',
   '¿En qué etapa de vida estás?',
   '¿Qué querés que Dios hable a tu vida en esta temporada?',
 ]
@@ -56,7 +57,7 @@ function OpcionCard({
         <p className="text-xs text-gray-500 dark:text-slate-500 mt-0.5">{opcion.desc}</p>
       </div>
       <div
-        className={`shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+        className={`shrink-0 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
           seleccionada ? 'border-purple-500 bg-purple-500' : 'border-gray-300 dark:border-white/20'
         }`}
       >
@@ -79,11 +80,17 @@ interface SituacionFormProps {
 export default function SituacionForm({ areaInicial, etapaInicial, isActualizando = false }: SituacionFormProps) {
   const [paso, setPaso] = useState(1)
   const [visible, setVisible] = useState(true)
-  const [area, setArea] = useState<string | null>(areaInicial ?? null)
+  const [areas, setAreas] = useState<string[]>(parseAreas(areaInicial))
   const [etapa, setEtapa] = useState<string | null>(etapaInicial ?? null)
   const [intencion, setIntencion] = useState('')
   const [guardando, setGuardando] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+
+  function toggleArea(value: string) {
+    setAreas(prev =>
+      prev.includes(value) ? prev.filter(a => a !== value) : [...prev, value]
+    )
+  }
 
   const avanzar = () => {
     setVisible(false)
@@ -102,7 +109,7 @@ export default function SituacionForm({ areaInicial, etapaInicial, isActualizand
   }
 
   const guardar = async () => {
-    if (!area || !etapa) return
+    if (areas.length === 0 || !etapa) return
     setGuardando(true)
     setErrorMsg(null)
     try {
@@ -110,7 +117,7 @@ export default function SituacionForm({ areaInicial, etapaInicial, isActualizand
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          area_orientacion: area,
+          area_orientacion: JSON.stringify(areas),
           etapa_vida: etapa,
           intencion_actual: intencion.trim() || null,
         }),
@@ -156,24 +163,27 @@ export default function SituacionForm({ areaInicial, etapaInicial, isActualizand
           pointerEvents: visible ? 'auto' : 'none',
         }}
       >
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-5 leading-snug">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 leading-snug">
           {TITULOS[paso - 1]}
         </h2>
 
         {paso === 1 && (
           <div className="space-y-3">
+            <p className="text-xs text-purple-600 dark:text-purple-400 mb-4">
+              Podés elegir más de una
+            </p>
             {AREAS.map(op => (
               <OpcionCard
                 key={op.value}
                 opcion={op}
-                seleccionada={area === op.value}
-                onSeleccionar={() => setArea(op.value)}
+                seleccionada={areas.includes(op.value)}
+                onSeleccionar={() => toggleArea(op.value)}
               />
             ))}
             <button
               type="button"
               onClick={avanzar}
-              disabled={!area}
+              disabled={areas.length === 0}
               className="w-full mt-2 py-3.5 px-6 rounded-xl font-semibold text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-purple-600 hover:bg-purple-500 active:bg-purple-700 text-white"
             >
               Siguiente
@@ -190,6 +200,7 @@ export default function SituacionForm({ areaInicial, etapaInicial, isActualizand
 
         {paso === 2 && (
           <div className="space-y-3">
+            <p className="text-xs text-gray-400 dark:text-slate-500 mb-4">&nbsp;</p>
             {ETAPAS.map(op => (
               <OpcionCard
                 key={op.value}
@@ -238,6 +249,7 @@ export default function SituacionForm({ areaInicial, etapaInicial, isActualizand
             <p className="text-right text-xs text-gray-400 dark:text-slate-600">{intencion.length}/200</p>
             {errorMsg && <p className="text-red-600 dark:text-red-400 text-sm">{errorMsg}</p>}
             <button
+              type="button"
               onClick={guardar}
               disabled={guardando}
               className="w-full py-3.5 px-6 rounded-xl font-semibold text-sm transition-all disabled:opacity-60 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white flex items-center justify-center gap-2 shadow-lg shadow-purple-500/20"

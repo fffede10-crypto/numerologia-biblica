@@ -233,7 +233,7 @@ export default async function MiPerfilPage() {
                 })()}
               </div>
               <Link
-                href="/onboarding/situacion"
+                href="/onboarding/situacion?modo=actualizar"
                 className="shrink-0 flex items-center gap-1.5 text-xs font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors px-3 py-1.5 rounded-lg border border-purple-200 dark:border-purple-700/40 hover:bg-purple-50 dark:hover:bg-purple-900/20"
               >
                 <Pencil size={12} /> Actualizar

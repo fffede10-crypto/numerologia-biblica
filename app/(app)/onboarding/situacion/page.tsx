@@ -4,7 +4,11 @@ import { verifyToken } from '@/lib/auth'
 import { supabaseAdmin } from '@/lib/supabase'
 import SituacionForm from './SituacionForm'
 
-export default async function SituacionPage() {
+interface Props {
+  searchParams: { modo?: string }
+}
+
+export default async function SituacionPage({ searchParams }: Props) {
   const cookieStore = cookies()
   const token = cookieStore.get('nb_token')?.value
   if (!token) redirect('/login')
@@ -18,7 +22,14 @@ export default async function SituacionPage() {
     .eq('id', payload.sub)
     .single()
 
-  const isActualizando = !!usuario?.area_orientacion
+  const modoActualizar = searchParams.modo === 'actualizar'
+
+  // Si ya tiene contexto y NO viene del botón Actualizar, redirigir al dashboard
+  if (usuario?.area_orientacion && !modoActualizar) {
+    redirect('/dashboard')
+  }
+
+  const isActualizando = modoActualizar && !!usuario?.area_orientacion
 
   return (
     <div className="max-w-xl mx-auto px-4 py-10">

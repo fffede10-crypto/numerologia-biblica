@@ -153,6 +153,7 @@ export default function SituacionForm({ areaInicial, etapaInicial, isActualizand
           opacity: visible ? 1 : 0,
           transform: visible ? 'translateY(0)' : 'translateY(12px)',
           transition: 'opacity 0.2s ease, transform 0.2s ease',
+          pointerEvents: visible ? 'auto' : 'none',
         }}
       >
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-5 leading-snug">
@@ -170,6 +171,7 @@ export default function SituacionForm({ areaInicial, etapaInicial, isActualizand
               />
             ))}
             <button
+              type="button"
               onClick={avanzar}
               disabled={!area}
               className="w-full mt-2 py-3.5 px-6 rounded-xl font-semibold text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-purple-600 hover:bg-purple-500 active:bg-purple-700 text-white"
@@ -178,7 +180,7 @@ export default function SituacionForm({ areaInicial, etapaInicial, isActualizand
             </button>
             <button
               type="button"
-              onClick={() => { window.location.href = '/dashboard' }}
+              onClick={() => { window.location.href = isActualizando ? '/mi-perfil' : '/dashboard' }}
               className="w-full py-2.5 text-sm text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 transition-colors"
             >
               Saltear por ahora
@@ -197,6 +199,7 @@ export default function SituacionForm({ areaInicial, etapaInicial, isActualizand
               />
             ))}
             <button
+              type="button"
               onClick={avanzar}
               disabled={!etapa}
               className="w-full mt-2 py-3.5 px-6 rounded-xl font-semibold text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-purple-600 hover:bg-purple-500 active:bg-purple-700 text-white"
@@ -213,7 +216,7 @@ export default function SituacionForm({ areaInicial, etapaInicial, isActualizand
               </button>
               <button
                 type="button"
-                onClick={() => { window.location.href = '/dashboard' }}
+                onClick={() => { window.location.href = isActualizando ? '/mi-perfil' : '/dashboard' }}
                 className="flex-1 py-2.5 text-sm text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 transition-colors text-center"
               >
                 Saltear por ahora
@@ -258,7 +261,7 @@ export default function SituacionForm({ areaInicial, etapaInicial, isActualizand
               </button>
               <button
                 type="button"
-                onClick={() => { window.location.href = '/dashboard' }}
+                onClick={() => { window.location.href = isActualizando ? '/mi-perfil' : '/dashboard' }}
                 className="flex-1 py-2.5 text-sm text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 transition-colors text-center"
               >
                 Saltear por ahora
